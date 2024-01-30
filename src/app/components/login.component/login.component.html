@@ -1,0 +1,16 @@
+<div class="main">
+    <div class="login-conteiner">
+        <h2>Вход</h2>
+        <mat-form-field appearance="outline">
+            <mat-label>Введите ваше ФИО или секцию</mat-label>
+            <input matInput [(ngModel)]="login">
+        </mat-form-field>
+        <mat-form-field appearance="outline">
+            <mat-label>Выберите торговый объект</mat-label>
+            <select matNativeControl [(ngModel)]="selectedStore">
+                <option value="{{s.storeloc}}" *ngFor="let s of storeList">{{s.name}}</option>
+            </select>
+        </mat-form-field>
+        <button mat-raised-button (click)="Login()">Вход</button>
+    </div>
+</div>

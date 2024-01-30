@@ -1,0 +1,61 @@
+<mat-drawer-container [hasBackdrop]="true">
+    <mat-drawer class="menu-conteiner" #drawer mode="over">
+        <button>
+            <img src="../../../assets/find_product.png">
+            ПОИСК ПРОДУКЦИИ
+        </button>
+        <button (click)="openDocumentItems()">
+            <img src="../../../assets/list_product.png">
+            СПИСОК ПРОДУКЦИИ
+        </button>
+        <button (click)="openAgreeDialog()">
+            <img src="../../../assets/compl_product.png">
+            ЗАВЕРШИТЬ РАБОТУ
+        </button>
+        <button (click)="goBack()">
+            <img src="../../../assets/back_product.png">
+            Меню
+        </button>
+    </mat-drawer>
+    <div class="main">
+        <nav class="navbar">
+            <button (click)="drawer.toggle()">
+                <img src="../../../assets/ham.png">
+            </button>
+            <span>Поиск продукции</span>
+        </nav>
+        <div class="search-conteiner">
+            <span>
+                Наименование товара
+            </span>
+            <span>
+                {{productInfo.name}}
+            </span>
+            <div class="input-conteiner">
+                <img src="../../../assets/box.png">
+                <div class="input-search-conteiner">
+                    <div>
+                        <span>Артикул:</span>
+                        <span>{{productInfo.article}}</span>
+                    </div>
+                    <mat-form-field appearance="outline">
+                        <mat-label>Штрихкод:</mat-label>
+                        <input matInput [(ngModel)]="barcode" (input)="InputHandel($event)"
+                            (keyup.enter)="GetProductInfo()">
+                    </mat-form-field>
+                </div>
+            </div>
+            <div class="input-box-conteiner">
+                <mat-form-field appearance="outline">
+                    <mat-label>Кол-во:</mat-label>
+                    <input matInput [(ngModel)]="count">
+                </mat-form-field>
+                <mat-form-field appearance="outline">
+                    <mat-label>№ по порядку</mat-label>
+                    <input matInput [(ngModel)]="numberInQueue">
+                </mat-form-field>
+            </div>
+            <button (click)="AddProductToDoc()">Добавить в список продукции</button>
+        </div>
+    </div>
+</mat-drawer-container>
