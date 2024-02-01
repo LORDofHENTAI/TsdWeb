@@ -16,7 +16,8 @@
             <option value="Проверка">Проверка</option>
         </select>
     </mat-form-field>
-    <button mat-raised-button style="width: 100%;" (click)="createDoc()">СОЗДАТЬ ДОКУМЕНТ</button>
+    <button mat-raised-button style="width: 100%;" (click)="createDoc()" [disabled]="!docType || !docName">СОЗДАТЬ
+        ДОКУМЕНТ</button>
 </mat-dialog-content>
 <mat-dialog-actions align="end">
     <button mat-button mat-dialog-close>Отмена</button>

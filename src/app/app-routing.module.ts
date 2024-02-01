@@ -9,7 +9,7 @@ import { DocumentItemsComponent } from './components/document-items.component/do
 import { loginGuard } from './guards/login.guard';
 
 const routes: Routes = [
-  { path: '', redirectTo: '/menu', pathMatch: 'full' },
+  { path: '', redirectTo: 'menu', pathMatch: 'full' },
   { path: 'login', component: LoginComponent },
   { path: 'menu', component: MenuComponent, canActivate: [loginGuard] },
   { path: 'work-space/:docId', component: WorkSpaceComponent, canActivate: [loginGuard] },

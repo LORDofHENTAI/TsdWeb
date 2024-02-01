@@ -37,7 +37,10 @@ export class WorkSpaceComponent {
     GetProductInfo() {
         this.documentService.FindInfo(new FindInfoReq(null, this.barcode, this.tokenService.getShop())).subscribe({
             next: result => {
-                this.productInfo = result
+                if (result)
+                    this.productInfo = result
+                else
+                    this.snackBarService.openSnackBar('Товар не найден', environment.action, environment.styleNoConnect);
             },
             error: error => {
                 console.log(error)
@@ -45,33 +48,37 @@ export class WorkSpaceComponent {
         })
     }
     AddProductToDoc() {
-        let prod = new AddProductModel(this.tokenService.getToken(), this.tokenService.getShop(), this.docId, this.productInfo.article, this.productInfo.barcode, this.productInfo.name, this.count, this.numberInQueue)
-        this.documentService.AddProduct(prod).subscribe({
-            next: result => {
-                switch (result.status) {
-                    case 'true':
-                        this.snackBarService.openSnackBar('Добавлено', environment.action, environment.styleOK);
-                        this.numberInQueue += 1;
-                        this.barcode = null
-                        this.count = null
-                        this.productInfo = this.clear
-                        break;
-                    case 'BadAuth':
-                        this.snackBarService.openSnackBar('Токен устарел', environment.action, environment.styleNoConnect);
-                        break;
-                    case 'NULL':
-                        this.snackBarService.openSnackBar('NULL', environment.action, environment.styleNoConnect);
-                        break;
-                    case 'error':
-                        this.snackBarService.openSnackBar('Ошибка', environment.action, environment.styleNoConnect);
-                        break;
+        if (this.productInfo.article) {
+            let prod = new AddProductModel(this.tokenService.getToken(), this.tokenService.getShop(), this.docId, this.productInfo.article, this.productInfo.barcode, this.productInfo.name, this.count, this.numberInQueue)
+            this.documentService.AddProduct(prod).subscribe({
+                next: result => {
+                    switch (result.status) {
+                        case 'true':
+                            this.snackBarService.openSnackBar('Добавлено', environment.action, environment.styleOK);
+                            this.numberInQueue += 1;
+                            this.barcode = null
+                            this.count = null
+                            this.productInfo = this.clear
+                            break;
+                        case 'BadAuth':
+                            this.snackBarService.openSnackBar('Токен устарел', environment.action, environment.styleNoConnect);
+                            break;
+                        case 'NULL':
+                            this.snackBarService.openSnackBar('NULL', environment.action, environment.styleNoConnect);
+                            break;
+                        case 'error':
+                            this.snackBarService.openSnackBar('Ошибка', environment.action, environment.styleNoConnect);
+                            break;
+                    }
+                },
+                error: error => {
+                    console.log(error)
+                    this.snackBarService.openSnackBar('Добавлено', environment.action, environment.styleNoConnect);
                 }
-            },
-            error: error => {
-                console.log(error)
-                this.snackBarService.openSnackBar('Добавлено', environment.action, environment.styleNoConnect);
-            }
-        })
+            })
+        } else
+            this.snackBarService.openSnackBar('Отсканируйте ШК', environment.action, environment.styleNoConnect);
+
     }
     InputHandel(event: any) {
         var number = event.target.value;
