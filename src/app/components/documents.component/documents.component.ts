@@ -41,6 +41,7 @@ export class DocumentsComponent implements OnInit {
                 switch (result.status) {
                     case 'true':
                         this.snackBarService.openSnackBar("Документ удален", environment.action, environment.styleOK);
+                        this.GetDocumentList()
                         break;
                     case 'NULL':
                         this.snackBarService.openSnackBar("Неверный запрос", environment.action, environment.styleNoConnect);
