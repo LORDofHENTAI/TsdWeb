@@ -6,6 +6,7 @@ export class DocumentBodyModel {
         public barcode: string,
         public name: string,
         public count_e: string,
-        public numb: number
+        public numb: number,
+        public price?: string
     ) { }
 }

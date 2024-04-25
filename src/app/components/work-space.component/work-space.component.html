@@ -40,19 +40,19 @@
                     </div>
                     <mat-form-field appearance="outline">
                         <mat-label>Штрихкод:</mat-label>
-                        <input matInput [(ngModel)]="barcode" (input)="InputHandel($event)"
-                            (keyup.enter)="GetProductInfo()">
+                        <input id="barcodeInput" matInput type="number" [(ngModel)]="barcode"
+                            (input)="InputHandel($event)" (keyup.enter)="GetProductInfo()">
                     </mat-form-field>
                 </div>
             </div>
             <div class="input-box-conteiner">
                 <mat-form-field appearance="outline">
                     <mat-label>Кол-во:</mat-label>
-                    <input matInput [(ngModel)]="count">
+                    <input matInput [(ngModel)]="count" type="number">
                 </mat-form-field>
                 <mat-form-field appearance="outline">
                     <mat-label>№ по порядку</mat-label>
-                    <input matInput [(ngModel)]="numberInQueue">
+                    <input matInput type="number" [(ngModel)]="numberInQueue">
                 </mat-form-field>
             </div>
             <button (click)="AddProductToDoc()">Добавить в список продукции</button>

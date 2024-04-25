@@ -19,12 +19,12 @@
             <div>
                 <mat-form-field appearance="outline" color="warn">
                     <mat-label>Артикул:</mat-label>
-                    <input matInput (input)="inputHandleBarcode($event)" (keyup.enter)="FindInfo()"
+                    <input id="inputArticle" matInput (input)="inputHandleBarcode($event)" (keyup.enter)="FindInfo()"
                         [(ngModel)]="article">
                 </mat-form-field>
                 <mat-form-field appearance="outline" color="warn">
                     <mat-label>Штрихкод:</mat-label>
-                    <input matInput (input)="inputHandleBarcode($event)" (keyup.enter)="FindInfo()"
+                    <input id="inputBarcode" matInput (input)="inputHandleBarcode($event)" (keyup.enter)="FindInfo()"
                         [(ngModel)]="barcode">
                 </mat-form-field>
             </div>

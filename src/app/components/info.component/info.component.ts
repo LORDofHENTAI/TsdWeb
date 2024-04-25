@@ -58,6 +58,10 @@ export class InfoComponent implements OnInit {
         let req = new FindInfoReq(this.article ? this.article : null, this.barcode ? this.barcode : null, this.tokenService.getShop())
         this.documentService.FindInfo(req).subscribe({
             next: res => {
+                var inputArticle = document.getElementById('inputArticle')
+                var inputBarcode = document.getElementById('inputBarcode')
+                inputArticle.blur()
+                inputBarcode.blur()
                 this.info = res
                 this.article = res.article
                 this.barcode = res.barcode

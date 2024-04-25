@@ -11,6 +11,7 @@
                 <img src="../../../assets/ham.png">
             </button>
             <span>Поиск продукции</span>
+            <span>Сумма документа: {{totalPrice}}</span>
         </nav>
         <div class="list-conteiner" *ngFor="let i of items">
             <div class="item-conteiner">
@@ -26,16 +27,18 @@
                     <span *ngIf="switchEdit===false">{{i.count_e}}</span>
                     <mat-form-field appearance="outline" *ngIf="switchEdit===true">
                         <mat-label>Кол-во:</mat-label>
-                        <input matInput [(ngModel)]="count">
+                        <input matInput type="number" [(ngModel)]="count">
                     </mat-form-field>
                     <span *ngIf="switchEdit===false">№ в списке:</span>
                     <span *ngIf="switchEdit===false">{{i.numb}}</span>
                     <mat-form-field appearance="outline" *ngIf="switchEdit===true">
                         <mat-label>№ по списку:</mat-label>
-                        <input matInput [(ngModel)]="numb">
+                        <input matInput type="number" [(ngModel)]="numb">
                     </mat-form-field>
                     <span>Наименование:</span>
                     <span>{{i.name}}</span>
+                    <span>Цена в момент добавления:</span>
+                    <span>{{i.price}}</span>
                 </div>
             </div>
             <button mat-raised-button style="color: red;margin: 10px; font-weight: bold;" (click)="DeleteItem(i.id)">

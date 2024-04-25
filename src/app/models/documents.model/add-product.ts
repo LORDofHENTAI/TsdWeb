@@ -7,6 +7,7 @@ export class AddProductModel {
         public barcode: string,
         public name: string,
         public count_e: number,
-        public numb: number
+        public numb: number,
+        public price?: string
     ) { }
 }

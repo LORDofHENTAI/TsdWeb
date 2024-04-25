@@ -35,9 +35,11 @@ export class WorkSpaceComponent {
     productInfo: FindInfoAnswModel = new FindInfoAnswModel('', '', '', '', '', '', '', '', '')
     clear = new FindInfoAnswModel('', '', '', '', '', '', '', '', '')
     GetProductInfo() {
-        this.documentService.FindInfo(new FindInfoReq(null, this.barcode, this.tokenService.getShop())).subscribe({
+        this.documentService.FindInfo(new FindInfoReq(null, String(this.barcode), this.tokenService.getShop())).subscribe({
             next: result => {
-                if (result)
+                var input = document.getElementById('barcodeInput')
+                input.blur();
+                if (result.article)
                     this.productInfo = result
                 else
                     this.snackBarService.openSnackBar('Товар не найден', environment.action, environment.styleNoConnect);
@@ -49,7 +51,8 @@ export class WorkSpaceComponent {
     }
     AddProductToDoc() {
         if (this.productInfo.article) {
-            let prod = new AddProductModel(this.tokenService.getToken(), this.tokenService.getShop(), this.docId, this.productInfo.article, this.productInfo.barcode, this.productInfo.name, this.count, this.numberInQueue)
+            let prod = new AddProductModel(this.tokenService.getToken(), this.tokenService.getShop(), this.docId, this.productInfo.article, this.productInfo.barcode, this.productInfo.name, this.count, this.numberInQueue, this.productInfo.price)
+            console.log(prod)
             this.documentService.AddProduct(prod).subscribe({
                 next: result => {
                     switch (result.status) {
@@ -85,6 +88,7 @@ export class WorkSpaceComponent {
         if (number.length >= 12) {
             this.GetProductInfo()
         }
+
     }
     openDocumentItems() {
         this.router.navigate(["document-items", this.docId])

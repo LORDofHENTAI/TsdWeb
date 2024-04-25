@@ -29,6 +29,7 @@ export class DocumentItemsComponent implements OnInit {
     docId: number
 
     items: DocumentBodyModel[] = []
+    totalPrice: number = 0
     ngOnInit(): void {
         this.GetDocumentItems()
     }
@@ -36,7 +37,13 @@ export class DocumentItemsComponent implements OnInit {
         this.documentService.GetDocumentBody(new TokenRequest(this.tokenService.getToken(), this.tokenService.getShop(), this.docId)).subscribe({
             next: result => {
                 this.items = result
-                console.log(result)
+                result.forEach(element => {
+                    console.log(element)
+                    if (!element.price || !element.count_e)
+                        this.totalPrice += 0
+                    else
+                        this.totalPrice += (Number(element.price.replace(',', '.')) * Number(element.count_e))
+                });
             },
             error: error => {
                 console.log(error)
