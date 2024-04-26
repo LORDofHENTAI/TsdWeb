@@ -33,7 +33,6 @@
     mat-form-field{
         margin-bottom: -10px;
     }
-    
     .navbar{
         width: 100vw;
         background-color: darkorange;
@@ -92,6 +91,7 @@
             // margin: 10px;
             mat-form-field{
                 width: 70%;
+                
             }
         }
         button{
@@ -105,6 +105,12 @@
                 background-color: darkorange;
                 height: 50px;
                 border: 1px solid rgba(216, 216, 216, 0.568);
+        }
+        .clear-button{
+            background-color: white;
+            height: 40px;
+            width: 40px;
+            margin-right: 5px;
         }
     }
 }

@@ -39,6 +39,7 @@ export class WorkSpaceComponent {
             next: result => {
                 var input = document.getElementById('barcodeInput')
                 input.blur();
+                console.log(result)
                 if (result.article)
                     this.productInfo = result
                 else
@@ -51,7 +52,7 @@ export class WorkSpaceComponent {
     }
     AddProductToDoc() {
         if (this.productInfo.article) {
-            let prod = new AddProductModel(this.tokenService.getToken(), this.tokenService.getShop(), this.docId, this.productInfo.article, this.productInfo.barcode, this.productInfo.name, this.count, this.numberInQueue, this.productInfo.price)
+            let prod = new AddProductModel(this.tokenService.getToken(), this.tokenService.getShop(), this.docId, this.productInfo.article, this.productInfo.barcode, this.productInfo.name, this.count, this.numberInQueue, this.productInfo.price, this.productInfo.img_url)
             console.log(prod)
             this.documentService.AddProduct(prod).subscribe({
                 next: result => {

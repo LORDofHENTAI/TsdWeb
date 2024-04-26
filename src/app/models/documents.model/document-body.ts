@@ -7,6 +7,7 @@ export class DocumentBodyModel {
         public name: string,
         public count_e: string,
         public numb: number,
-        public price?: string
+        public price?: string,
+        public imgUrl?: string
     ) { }
 }

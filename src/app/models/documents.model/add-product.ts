@@ -8,6 +8,7 @@ export class AddProductModel {
         public name: string,
         public count_e: number,
         public numb: number,
-        public price?: string
+        public price?: string,
+        public imgURL?: string
     ) { }
 }

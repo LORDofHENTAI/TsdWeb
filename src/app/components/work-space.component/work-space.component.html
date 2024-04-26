@@ -32,7 +32,12 @@
                 {{productInfo.name}}
             </span>
             <div class="input-conteiner">
-                <img src="../../../assets/box.png">
+                <ng-container *ngIf="productInfo.img_url">
+                    <img [src]="productInfo.img_url | urlImg">
+                </ng-container>
+                <ng-container *ngIf="!productInfo.img_url">
+                    <img src="../../../assets/box.png">
+                </ng-container>
                 <div class="input-search-conteiner">
                     <div>
                         <span>Артикул:</span>
@@ -42,6 +47,9 @@
                         <mat-label>Штрихкод:</mat-label>
                         <input id="barcodeInput" matInput type="number" [(ngModel)]="barcode"
                             (input)="InputHandel($event)" (keyup.enter)="GetProductInfo()">
+                        <button class="clear-button" matSuffix mat-icon-button aria-label="Clear" (click)="barcode=''">
+                            <mat-icon>close</mat-icon>
+                        </button>
                     </mat-form-field>
                 </div>
             </div>

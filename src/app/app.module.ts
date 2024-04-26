@@ -21,6 +21,7 @@ import { MatSidenavModule } from '@angular/material/sidenav';
 import { HttpClientModule } from '@angular/common/http';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { AgreeDialogComponent } from './components/dialog-window/agree.dialog.component';
+import { UrlImgPipe } from './pipes/url-img.pipe';
 @NgModule({
   declarations: [
     AppComponent,
@@ -31,7 +32,8 @@ import { AgreeDialogComponent } from './components/dialog-window/agree.dialog.co
     DocumentsComponent,
     CreateDocumentDialog,
     DocumentItemsComponent,
-    AgreeDialogComponent
+    AgreeDialogComponent,
+    UrlImgPipe
   ],
   imports: [
     BrowserModule,

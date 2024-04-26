@@ -16,7 +16,8 @@
         <div class="list-conteiner" *ngFor="let i of items">
             <div class="item-conteiner">
                 <div>
-                    <img src="../../../assets/box.png">
+                    <!-- <ng-container *ngIf="i.imgUrl"> -->
+                    <img [src]="i.imgUrl | urlImg">
                 </div>
                 <div>
                     <span>Артикул:</span>
