@@ -22,6 +22,7 @@ import { HttpClientModule } from '@angular/common/http';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { AgreeDialogComponent } from './components/dialog-window/agree.dialog.component';
 import { UrlImgPipe } from './pipes/url-img.pipe';
+import { ExitDialog } from './components/menu.component/menu.component';
 @NgModule({
   declarations: [
     AppComponent,
@@ -33,7 +34,8 @@ import { UrlImgPipe } from './pipes/url-img.pipe';
     CreateDocumentDialog,
     DocumentItemsComponent,
     AgreeDialogComponent,
-    UrlImgPipe
+    UrlImgPipe,
+    ExitDialog
   ],
   imports: [
     BrowserModule,

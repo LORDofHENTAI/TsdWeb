@@ -44,7 +44,7 @@ export class InfoComponent implements OnInit {
     }
     inputHandleBarcode(event: any) {
         var number = event.target.value;
-        if (number.length >= 12) {
+        if (number.length >= 13) {
             this.FindInfo()
         }
     }

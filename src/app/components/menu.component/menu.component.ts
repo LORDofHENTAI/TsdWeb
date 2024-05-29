@@ -35,6 +35,19 @@ export class MenuComponent {
             }
         });
     }
+    openExitDialog() {
+        const dialogRef = this.dialog.open(ExitDialog)
+        dialogRef.afterClosed().subscribe(result => {
+            switch (result) {
+                case "true":
+                    this.LogOut()
+                    break;
+                case "error":
+                    this.snackBarServcie.openSnackBar("Ошибка создания документа", environment.action, environment.styleNoConnect)
+                    break;
+            }
+        });
+    }
     LogOut() {
         this.loginService.LogOut(new TokenRequest(this.tokenService.getToken())).subscribe({
             next: result => {
@@ -78,5 +91,18 @@ export class CreateDocumentDialog {
                 this.dialogRef.close("error")
             }
         })
+    }
+}
+
+@Component({
+    templateUrl: './confirm-dialog/confirm-dialog.html',
+    styleUrls: ['./menu.component.scss']
+})
+export class ExitDialog {
+    constructor(
+        public dialogRef: MatDialogRef<ExitDialog>,
+    ) { }
+    apply() {
+        this.dialogRef.close("true")
     }
 }
