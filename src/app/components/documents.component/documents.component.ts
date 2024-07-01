@@ -1,13 +1,17 @@
 import { Component, OnInit } from "@angular/core";
 import { Router } from "@angular/router";
+import { select, Store } from '@ngrx/store';
+import { Observable } from "rxjs";
 import { DeleteDocumentModel } from "src/app/models/documents.model/delete-document";
 import { DocumentModel } from "src/app/models/documents.model/document";
 import { TokenRequest } from "src/app/models/login.models/token-request";
+import { DocumentState } from "src/app/reducers/documents/documents.reducer";
+import { selectDocuments } from "src/app/reducers/documents/documents.selectors";
 import { DocumentsService } from "src/app/services/documents.service";
 import { SnakebarService } from "src/app/services/snack-bar.service";
 import { TokenService } from "src/app/services/token.service";
 import { environment } from "src/environment/environment";
-
+import * as DocumentAction from '../../reducers/documents/documents.actions'
 @Component({
     selector: 'app-documents',
     templateUrl: './documents.component.html',
@@ -15,50 +19,17 @@ import { environment } from "src/environment/environment";
 })
 export class DocumentsComponent implements OnInit {
     constructor(
-        private documentService: DocumentsService,
         private tokenService: TokenService,
-        private snackBarService: SnakebarService,
-        private router: Router
+        private router: Router,
+        private store$: Store<DocumentState>
     ) { }
+    public documents$: Observable<DocumentModel[]> = this.store$.select(selectDocuments)
     documentList: DocumentModel[]
     ngOnInit(): void {
-        this.GetDocumentList()
-    }
-    GetDocumentList() {
-        this.documentService.GetDocumentList(new TokenRequest(this.tokenService.getToken(), this.tokenService.getShop())).subscribe({
-            next: result => {
-                this.documentList = result
-            },
-            error: error => {
-                console.log(error)
-                this.snackBarService.openSnackBar(environment.messageNoConnect, environment.action, environment.styleNoConnect);
-            }
-        })
+        this.store$.dispatch(DocumentAction.getDocumentList(new TokenRequest(this.tokenService.getToken(), this.tokenService.getShop())))
     }
     DeleteDocument(element: number) {
-        this.documentService.DeleteDocument(new DeleteDocumentModel(this.tokenService.getToken(), this.tokenService.getShop(), element)).subscribe({
-            next: result => {
-                switch (result.status) {
-                    case 'true':
-                        this.snackBarService.openSnackBar("Документ удален", environment.action, environment.styleOK);
-                        this.GetDocumentList()
-                        break;
-                    case 'NULL':
-                        this.snackBarService.openSnackBar("Неверный запрос", environment.action, environment.styleNoConnect);
-                        break;
-                    case 'error':
-                        this.snackBarService.openSnackBar(environment.messageNoConnect, environment.action, environment.styleNoConnect);
-                        break;
-                    case 'BadAuth':
-                        this.snackBarService.openSnackBar('Токен не действителен', environment.action, environment.styleNoConnect);
-                        break;
-                }
-            },
-            error: error => {
-                console.log(error);
-                this.snackBarService.openSnackBar(environment.messageNoConnect, environment.action, environment.styleNoConnect);
-            }
-        })
+        this.store$.dispatch(DocumentAction.deleteDocument(new DeleteDocumentModel(this.tokenService.getToken(), this.tokenService.getShop(), element)))
     }
     LoadDocument(element: number) {
         this.router.navigate(['work-space', element])

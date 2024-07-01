@@ -1,14 +1,19 @@
 import { Component } from "@angular/core";
 import { MatDialog, MatDialogRef } from "@angular/material/dialog";
 import { Router } from "@angular/router";
+import { Store } from "@ngrx/store";
+import { Observable } from "rxjs";
 import { CreateDocumentModel } from "src/app/models/documents.model/create-document";
+import { DocumentModel } from "src/app/models/documents.model/document";
 import { TokenRequest } from "src/app/models/login.models/token-request";
+import { DocumentState } from "src/app/reducers/documents/documents.reducer";
+import { selectDocument } from "src/app/reducers/documents/documents.selectors";
 import { DocumentsService } from "src/app/services/documents.service";
 import { LoginService } from "src/app/services/login.service";
 import { SnakebarService } from "src/app/services/snack-bar.service";
 import { TokenService } from "src/app/services/token.service";
 import { environment } from "src/environment/environment";
-
+import * as DocumentAction from '../../reducers/documents/documents.actions'
 @Component({
     selector: 'app-menu',
     templateUrl: './menu.component.html',
@@ -71,27 +76,17 @@ export class CreateDocumentDialog {
         public dialogRef: MatDialogRef<CreateDocumentDialog>,
         private documentService: DocumentsService,
         private tokenService: TokenService,
+        private store$: Store<DocumentState>
     ) { }
     docId: string
     docName: string
     docType: string
+    public doc$: Observable<DocumentModel> = this.store$.select(selectDocument)
     createDoc() {
-        let doc = new CreateDocumentModel(this.docName, this.tokenService.getLogin(), this.docType, this.tokenService.getToken(), this.tokenService.getShop())
-        this.documentService.CreateDocument(doc).subscribe({
-            next: result => {
-                if (result) {
-                    this.router.navigate(["work-space", result.id])
-                    this.dialogRef.close("true")
-                }
-                else
-                    this.dialogRef.close("error")
-            },
-            error: error => {
-                console.log(error)
-                this.dialogRef.close("error")
-            }
-        })
+        this.store$.dispatch(DocumentAction.createDocument(new CreateDocumentModel(this.docName, this.tokenService.getLogin(), this.docType, this.tokenService.getToken(), this.tokenService.getShop())))
+        this.dialogRef.close("true")
     }
+
 }
 
 @Component({

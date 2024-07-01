@@ -1,12 +1,17 @@
 import { Component, OnInit } from "@angular/core";
 import { ActivatedRoute, Router } from "@angular/router";
+import { Store } from "@ngrx/store";
+import { Observable } from "rxjs";
 import { FindInfoAnswModel } from "src/app/models/documents.model/find-info-answ";
 import { FindInfoReq } from "src/app/models/documents.model/find-info-req";
 import { TokenRequest } from "src/app/models/login.models/token-request";
 import { StoreListModel } from "src/app/models/store-list";
+import { DocumentState } from "src/app/reducers/documents/documents.reducer";
+import { findInfo } from "src/app/reducers/documents/documents.selectors";
 import { DocumentsService } from "src/app/services/documents.service";
 import { LoginService } from "src/app/services/login.service";
 import { TokenService } from "src/app/services/token.service";
+import * as DocumentAction from 'src/app/reducers/documents/documents.actions'
 @Component({
     selector: 'app-info',
     templateUrl: './info.component.html',
@@ -18,6 +23,7 @@ export class InfoComponent implements OnInit {
         private loginService: LoginService,
         private documentService: DocumentsService,
         private tokenService: TokenService,
+        private store$: Store<DocumentState>
     ) {
     }
     storeList: StoreListModel[]
@@ -54,21 +60,22 @@ export class InfoComponent implements OnInit {
             this.FindInfo()
         }
     }
+    public findInfo$: Observable<FindInfoAnswModel> = this.store$.select(findInfo)
     FindInfo() {
         let req = new FindInfoReq(this.article ? this.article : null, this.barcode ? this.barcode : null, this.tokenService.getShop())
-        this.documentService.FindInfo(req).subscribe({
-            next: res => {
+        this.store$.dispatch(DocumentAction.findInfo(req))
+        this.findInfo$.subscribe({
+            next: result => {
                 var inputArticle = document.getElementById('inputArticle')
                 var inputBarcode = document.getElementById('inputBarcode')
                 inputArticle.blur()
                 inputBarcode.blur()
-                this.info = res
-                this.article = res.article
-                this.barcode = res.barcode
-                console.log(this.info)
+                this.info = result
+                this.article = result.article
+                this.barcode = result.barcode
             },
             error: error => {
-                console.log(error)
+                console.log(error);
             }
         })
     }

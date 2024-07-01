@@ -11,9 +11,9 @@
                 <img src="../../../assets/ham.png">
             </button>
             <span>Поиск продукции</span>
-            <span>Сумма документа: {{totalPrice}}</span>
+            <span>Сумма документа: {{totalPrice$| async}}</span>
         </nav>
-        <div class="list-conteiner" *ngFor="let i of items">
+        <div class="list-conteiner" *ngFor="let i of documentBody$|async">
             <div class="item-conteiner">
                 <div>
                     <!-- <ng-container *ngIf="i.imgUrl"> -->

@@ -9,7 +9,11 @@ import { SnakebarService } from "src/app/services/snack-bar.service";
 import { TokenService } from "src/app/services/token.service";
 import { environment } from "src/environment/environment";
 import { AgreeDialogComponent } from "../dialog-window/agree.dialog.component";
-
+import { DocumentState } from "src/app/reducers/documents/documents.reducer";
+import { Store } from "@ngrx/store";
+import { Observable } from "rxjs";
+import { selectedDocumentBody, selectedDocumentTotalPrice } from "src/app/reducers/documents/documents.selectors";
+import * as DocumentAction from '../../reducers/documents/documents.actions'
 @Component({
     selector: 'app-document-items',
     templateUrl: './document-items.component.html',
@@ -23,57 +27,19 @@ export class DocumentItemsComponent implements OnInit {
         private documentService: DocumentsService,
         private snackBarService: SnakebarService,
         private dialog: MatDialog,
+        private store$: Store<DocumentState>
     ) {
         route.params.subscribe(params => this.docId = params["docId"]);
     }
+    public documentBody$: Observable<DocumentBodyModel[]> = this.store$.select(selectedDocumentBody)
+    public totalPrice$: Observable<number> = this.store$.select(selectedDocumentTotalPrice)
     docId: number
 
-    items: DocumentBodyModel[] = []
-    totalPrice: number = 0
     ngOnInit(): void {
-        this.GetDocumentItems()
-    }
-    GetDocumentItems() {
-        this.documentService.GetDocumentBody(new TokenRequest(this.tokenService.getToken(), this.tokenService.getShop(), this.docId)).subscribe({
-            next: result => {
-                this.items = result
-                result.forEach(element => {
-                    console.log(element)
-                    if (!element.price || !element.count_e)
-                        this.totalPrice += 0
-                    else
-                        this.totalPrice += (Number(element.price.replace(',', '.')) * Number(element.count_e))
-                });
-            },
-            error: error => {
-                console.log(error)
-            }
-        })
+        this.store$.dispatch(DocumentAction.getDocumentBody(new TokenRequest(this.tokenService.getToken(), this.tokenService.getShop(), this.docId)))
     }
     DeleteItem(element: number) {
-        this.documentService.DeleteDocumentItem(new TokenRequest(this.tokenService.getToken(), this.tokenService.getShop(), element)).subscribe({
-            next: result => {
-                switch (result.status) {
-                    case 'true':
-                        this.snackBarService.openSnackBar('Удалено', environment.action, environment.styleOK);
-                        this.GetDocumentItems()
-                        break;
-                    case 'BadAuth':
-                        this.snackBarService.openSnackBar('Токен устарел', environment.action, environment.styleNoConnect);
-                        break;
-                    case 'NULL':
-                        this.snackBarService.openSnackBar('NULL', environment.action, environment.styleNoConnect);
-                        break;
-                    case 'error':
-                        this.snackBarService.openSnackBar('Ошибка', environment.action, environment.styleNoConnect);
-                        break;
-                }
-            },
-            error: error => {
-                console.log(error)
-                this.snackBarService.openSnackBar(environment.messageNoConnect, environment.action, environment.styleNoConnect);
-            }
-        })
+        this.store$.dispatch(DocumentAction.deleteDocumentItem(new TokenRequest(this.tokenService.getToken(), this.tokenService.getShop(), element)))
     }
     switchEdit: boolean = false
     count: number
@@ -84,55 +50,12 @@ export class DocumentItemsComponent implements OnInit {
             this.count = Number(count)
             this.numb = numb
         } else {
-            this.documentService.EditProduct(new EditProductModel(this.tokenService.getToken(), this.tokenService.getShop(), element, this.count, this.numb)).subscribe({
-                next: result => {
-                    switch (result.status) {
-                        case 'true':
-                            this.snackBarService.openSnackBar('Сохранено', environment.action, environment.styleOK);
-                            this.GetDocumentItems()
-                            this.switchEdit = !this.switchEdit
-                            break;
-                        case 'BadAuth':
-                            this.snackBarService.openSnackBar('Токен устарел', environment.action, environment.styleNoConnect);
-                            break;
-                        case 'NULL':
-                            this.snackBarService.openSnackBar('NULL', environment.action, environment.styleNoConnect);
-                            break;
-                        case 'error':
-                            this.snackBarService.openSnackBar('Ошибка', environment.action, environment.styleNoConnect);
-                            break;
-                    }
-                },
-                error: error => {
-                    console.log(error)
-                    this.snackBarService.openSnackBar(environment.messageNoConnect, environment.action, environment.styleNoConnect);
-                }
-            })
+            this.store$.dispatch(DocumentAction.editDocumentItem(new EditProductModel(this.tokenService.getToken(), this.tokenService.getShop(), element, this.count, this.numb)))
+            this.switchEdit = !this.switchEdit
         }
     }
     pushDoc() {
-        this.documentService.PushDocument(new TokenRequest(this.tokenService.getToken(), this.tokenService.getShop(), this.docId)).subscribe({
-            next: result => {
-                switch (result.status) {
-                    case 'true':
-                        this.snackBarService.openSnackBar('Документ успешно отправлен на сервер', environment.action, environment.styleOK);
-                        this.router.navigate([''])
-                        break;
-                    case 'BadAuth':
-                        this.snackBarService.openSnackBar('Токен устарел', environment.action, environment.styleNoConnect);
-                        break;
-                    case 'NULL':
-                        this.snackBarService.openSnackBar('NULL', environment.action, environment.styleNoConnect);
-                        break;
-                    case 'error':
-                        this.snackBarService.openSnackBar('Ошибка', environment.action, environment.styleNoConnect);
-                        break;
-                }
-            },
-            error: error => {
-                console.log(error)
-            }
-        })
+        this.store$.dispatch(DocumentAction.pushDoc(new TokenRequest(this.tokenService.getToken(), this.tokenService.getShop(), this.docId)))
     }
     openAgreeDialog() {
         const dialogRef = this.dialog.open(AgreeDialogComponent)

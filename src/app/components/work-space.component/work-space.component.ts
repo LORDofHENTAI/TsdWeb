@@ -10,13 +10,19 @@ import { SnakebarService } from "src/app/services/snack-bar.service";
 import { TokenService } from "src/app/services/token.service";
 import { environment } from "src/environment/environment";
 import { AgreeDialogComponent } from "../dialog-window/agree.dialog.component";
-
+import { Store } from "@ngrx/store";
+import { DocumentState } from "src/app/reducers/documents/documents.reducer";
+import * as DocumentAction from '../../reducers/documents/documents.actions'
+import { find, Observable } from "rxjs";
+import { findInfo, selectDocument, selectDocuments } from "src/app/reducers/documents/documents.selectors";
+import { DocumentModel } from "src/app/models/documents.model/document";
 @Component({
     selector: 'app-work-space',
     templateUrl: './work-space.component.html',
     styleUrls: ['./work-space.component.scss']
 })
 export class WorkSpaceComponent {
+
     constructor(
         private router: Router,
         private route: ActivatedRoute,
@@ -24,65 +30,39 @@ export class WorkSpaceComponent {
         private tokenService: TokenService,
         private snackBarService: SnakebarService,
         private dialog: MatDialog,
+        private store$: Store<DocumentState>
     ) {
         route.params.subscribe(params => this.docId = params["docId"]);
+
     }
+    public info$: Observable<FindInfoAnswModel> = this.store$.select(findInfo)
+
     docId: number
     barcode: string
     count: number
     numberInQueue: number = 1
-
-    productInfo: FindInfoAnswModel = new FindInfoAnswModel('', '', '', '', '', '', '', '', '')
+    productInfo: FindInfoAnswModel | null = new FindInfoAnswModel('', '', '', '', '', '', '', '', '')
     clear = new FindInfoAnswModel('', '', '', '', '', '', '', '', '')
+
     GetProductInfo() {
-        this.documentService.FindInfo(new FindInfoReq(null, String(this.barcode), this.tokenService.getShop())).subscribe({
+        this.store$.dispatch(DocumentAction.findInfo(new FindInfoReq(null, String(this.barcode), this.tokenService.getShop())))
+        var input = document.getElementById('barcodeInput')
+        input.blur();
+        this.info$.subscribe({
             next: result => {
-                var input = document.getElementById('barcodeInput')
-                input.blur();
-                console.log(result)
-                if (result.article)
-                    this.productInfo = result
-                else
-                    this.snackBarService.openSnackBar('Товар не найден', environment.action, environment.styleNoConnect);
-            },
-            error: error => {
-                console.log(error)
+                this.productInfo! = result
             }
         })
     }
     AddProductToDoc() {
         if (this.productInfo.article) {
-            let prod = new AddProductModel(this.tokenService.getToken(), this.tokenService.getShop(), this.docId, this.productInfo.article, this.productInfo.barcode, this.productInfo.name, this.count, this.numberInQueue, this.productInfo.price, this.productInfo.img_url)
-            console.log(prod)
-            this.documentService.AddProduct(prod).subscribe({
-                next: result => {
-                    switch (result.status) {
-                        case 'true':
-                            this.snackBarService.openSnackBar('Добавлено', environment.action, environment.styleOK);
-                            this.numberInQueue += 1;
-                            this.barcode = null
-                            this.count = null
-                            this.productInfo = this.clear
-                            break;
-                        case 'BadAuth':
-                            this.snackBarService.openSnackBar('Токен устарел', environment.action, environment.styleNoConnect);
-                            break;
-                        case 'NULL':
-                            this.snackBarService.openSnackBar('NULL', environment.action, environment.styleNoConnect);
-                            break;
-                        case 'error':
-                            this.snackBarService.openSnackBar('Ошибка', environment.action, environment.styleNoConnect);
-                            break;
-                    }
-                },
-                error: error => {
-                    console.log(error)
-                    this.snackBarService.openSnackBar('Добавлено', environment.action, environment.styleNoConnect);
-                }
-            })
+            this.store$.dispatch(DocumentAction.addProductToDoc(new AddProductModel(this.tokenService.getToken(), this.tokenService.getShop(), this.docId, this.productInfo.article, this.productInfo.barcode, this.productInfo.name, this.count, this.numberInQueue, this.productInfo.price, this.productInfo.img_url)))
+            this.numberInQueue += 1;
+            this.barcode = null
+            this.count = null
+            this.productInfo = this.clear
         } else
             this.snackBarService.openSnackBar('Отсканируйте ШК', environment.action, environment.styleNoConnect);
-
     }
     InputHandel(event: any) {
         var number = event.target.value;
@@ -98,28 +78,7 @@ export class WorkSpaceComponent {
         this.router.navigate([''])
     }
     pushDoc() {
-        this.documentService.PushDocument(new TokenRequest(this.tokenService.getToken(), this.tokenService.getShop(), this.docId)).subscribe({
-            next: result => {
-                switch (result.status) {
-                    case 'true':
-                        this.snackBarService.openSnackBar('Документ успешно отправлен на сервер', environment.action, environment.styleOK);
-                        this.router.navigate([''])
-                        break;
-                    case 'BadAuth':
-                        this.snackBarService.openSnackBar('Токен устарел', environment.action, environment.styleNoConnect);
-                        break;
-                    case 'NULL':
-                        this.snackBarService.openSnackBar('NULL', environment.action, environment.styleNoConnect);
-                        break;
-                    case 'error':
-                        this.snackBarService.openSnackBar('Ошибка', environment.action, environment.styleNoConnect);
-                        break;
-                }
-            },
-            error: error => {
-                console.log(error)
-            }
-        })
+        this.store$.dispatch(DocumentAction.pushDoc(new TokenRequest(this.tokenService.getToken(), this.tokenService.getShop(), this.docId)))
     }
     openAgreeDialog() {
         const dialogRef = this.dialog.open(AgreeDialogComponent)

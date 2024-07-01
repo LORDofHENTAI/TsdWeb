@@ -1,4 +1,4 @@
-import { NgModule } from '@angular/core';
+import { isDevMode, NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
@@ -23,6 +23,12 @@ import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { AgreeDialogComponent } from './components/dialog-window/agree.dialog.component';
 import { UrlImgPipe } from './pipes/url-img.pipe';
 import { ExitDialog } from './components/menu.component/menu.component';
+import { StoreModule } from '@ngrx/store';
+import { EffectsModule } from '@ngrx/effects';
+import { StoreDevtoolsModule } from '@ngrx/store-devtools';
+import { StoreRouterConnectingModule } from '@ngrx/router-store';
+import { metaReducers, reducers } from './reducers';
+import { DocumentsEffect } from './reducers/documents/documents.effects';
 @NgModule({
   declarations: [
     AppComponent,
@@ -49,7 +55,17 @@ import { ExitDialog } from './components/menu.component/menu.component';
     MatIconModule,
     MatSidenavModule,
     HttpClientModule,
-    MatSnackBarModule
+    MatSnackBarModule,
+    StoreModule.forRoot(reducers, {
+      metaReducers,
+      runtimeChecks: {
+        strictStateImmutability: true,
+        strictActionImmutability: true
+      }
+    }),
+    EffectsModule.forRoot([DocumentsEffect]),
+    StoreRouterConnectingModule.forRoot(),
+    StoreDevtoolsModule.instrument({ maxAge: 25, logOnly: !isDevMode() })
   ],
   providers: [CookieService],
   bootstrap: [AppComponent]
