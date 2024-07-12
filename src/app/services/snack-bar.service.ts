@@ -10,7 +10,7 @@ export class SnakebarService {
 
     openSnackBar(message: string, action: string, className: string = 'standart-snackbar') {
         this.snackBar.open(message, action, {
-            duration: 8000,
+            duration: 2000,
             verticalPosition: 'top',
             horizontalPosition: 'right',
             panelClass: [className]
