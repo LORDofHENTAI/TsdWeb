@@ -65,7 +65,7 @@ export class WorkSpaceComponent {
                             this.snackBarService.openSnackBar('Добавлено', environment.action, environment.styleOK);
                             this.barcode = null
                             this.inputForm.setValue({
-                                count: 0,
+                                count: null,
                                 number: this.inputForm.value.number + 1
                             })
                             this.productInfo = this.clear

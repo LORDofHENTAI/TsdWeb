@@ -79,4 +79,68 @@ export class CreateDocumentDialog {
             }
         })
     }
+    docInputHandler() {
+        if (this.docName.length >= 14) {
+            let LIT1 = this.docName.substring(3, 5)
+            let LIT2 = this.docName.substring(5, 7)
+            let NUM = this.docName.substring(7, 14)
+            this.docName = this.GetLIT(LIT1) + this.GetLIT(LIT2) + NUM
+        }
+    }
+    GetLIT(value: string) {
+
+        switch (value) {
+            case "01":
+                return "А";
+            case "02":
+                return "Б";
+            case "03":
+                return "В";
+            case "04":
+                return "Г";
+            case "05":
+                return "Д";
+            case "06":
+                return "Е";
+            case "07":
+                return "Ж";
+            case "08":
+                return "И";
+            case "09":
+                return "К";
+            case "10":
+                return "Л";
+            case "11":
+                return "М";
+            case "12":
+                return "Н";
+            case "13":
+                return "О";
+            case "14":
+                return "П";
+            case "15":
+                return "Р";
+            case "16":
+                return "С";
+            case "17":
+                return "Т";
+            case "18":
+                return "У";
+            case "19":
+                return "Ф"
+            case "20":
+                return "Х";
+            case "21":
+                return "Ч";
+            case "22":
+                return "Ш";
+            case "23":
+                return "Э";
+            case "24":
+                return "Ю";
+            case "25":
+                return "Я";
+            default: return "-";
+        };
+    }
 }

@@ -25,6 +25,9 @@ export class LoginComponent implements OnInit {
     login: string
     ngOnInit(): void {
         this.GetStoreList()
+        if (this.tokenService.getToken() != "") {
+            this.router.navigate(['/'])
+        }
     }
 
     GetStoreList() {
