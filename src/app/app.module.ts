@@ -14,7 +14,7 @@ import { CookieService } from 'ngx-cookie-service';
 import { MatSelectModule } from '@angular/material/select';
 import { CreateDocumentDialog } from './components/menu.component/menu.component';
 import { MatDialogModule } from '@angular/material/dialog';
-import { FormsModule } from "@angular/forms";
+import { FormsModule, ReactiveFormsModule } from "@angular/forms";
 import { MatIconModule } from '@angular/material/icon';
 import { DocumentItemsComponent } from './components/document-items.component/document-items.component';
 import { MatSidenavModule } from '@angular/material/sidenav';
@@ -47,7 +47,8 @@ import { UrlImgPipe } from './pipes/url-img.pipe';
     MatIconModule,
     MatSidenavModule,
     HttpClientModule,
-    MatSnackBarModule
+    MatSnackBarModule,
+    ReactiveFormsModule
   ],
   providers: [CookieService],
   bootstrap: [AppComponent]

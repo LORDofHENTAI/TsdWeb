@@ -10,6 +10,7 @@ import { SnakebarService } from "src/app/services/snack-bar.service";
 import { TokenService } from "src/app/services/token.service";
 import { environment } from "src/environment/environment";
 import { AgreeDialogComponent } from "../dialog-window/agree.dialog.component";
+import { FormControl, FormGroup } from "@angular/forms";
 
 @Component({
     selector: 'app-work-space',
@@ -31,7 +32,10 @@ export class WorkSpaceComponent {
     barcode: string
     count: number
     numberInQueue: number = 1
-
+    inputForm = new FormGroup({
+        'count': new FormControl(null),
+        'number': new FormControl(1),
+    })
     productInfo: FindInfoAnswModel = new FindInfoAnswModel('', '', '', '', '', '', '', '', '')
     clear = new FindInfoAnswModel('', '', '', '', '', '', '', '', '')
     GetProductInfo() {
@@ -52,16 +56,18 @@ export class WorkSpaceComponent {
     }
     AddProductToDoc() {
         if (this.productInfo.article) {
-            let prod = new AddProductModel(this.tokenService.getToken(), this.tokenService.getShop(), this.docId, this.productInfo.article, this.productInfo.barcode, this.productInfo.name, this.count, this.numberInQueue, this.productInfo.price, this.productInfo.img_url)
+            let prod = new AddProductModel(this.tokenService.getToken(), this.tokenService.getShop(), this.docId, this.productInfo.article, this.productInfo.barcode, this.productInfo.name, this.inputForm.value.count, this.inputForm.value.number, this.productInfo.price, this.productInfo.img_url)
             console.log(prod)
             this.documentService.AddProduct(prod).subscribe({
                 next: result => {
                     switch (result.status) {
                         case 'true':
                             this.snackBarService.openSnackBar('Добавлено', environment.action, environment.styleOK);
-                            this.numberInQueue += 1;
                             this.barcode = null
-                            this.count = null
+                            this.inputForm.setValue({
+                                count: 0,
+                                number: this.inputForm.value.number + 1
+                            })
                             this.productInfo = this.clear
                             break;
                         case 'BadAuth':
@@ -86,7 +92,7 @@ export class WorkSpaceComponent {
     }
     InputHandel(event: any) {
         var number = event.target.value;
-        if (number.length >= 12) {
+        if (number.length >= 13) {
             this.GetProductInfo()
         }
 
