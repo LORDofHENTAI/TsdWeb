@@ -54,14 +54,17 @@
                 </div>
             </div>
             <div class="input-box-conteiner">
-                <mat-form-field appearance="outline">
-                    <mat-label>Кол-во:</mat-label>
-                    <input matInput [(ngModel)]="count" type="number">
-                </mat-form-field>
-                <mat-form-field appearance="outline">
-                    <mat-label>№ по порядку</mat-label>
-                    <input matInput type="number" [(ngModel)]="numberInQueue">
-                </mat-form-field>
+                <form [formGroup]="inputForm">
+                    <mat-form-field appearance="outline">
+                        <mat-label>Кол-во:</mat-label>
+                        <input matInput formControlName="count" type="number">
+                    </mat-form-field>
+                    <mat-form-field appearance="outline">
+                        <mat-label>№ по порядку</mat-label>
+                        <input matInput type="number" formControlName="number">
+                    </mat-form-field>
+                </form>
+
             </div>
             <button (click)="AddProductToDoc()">Добавить в список продукции</button>
         </div>

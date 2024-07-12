@@ -16,6 +16,7 @@ import * as DocumentAction from '../../reducers/documents/documents.actions'
 import { find, Observable } from "rxjs";
 import { findInfo, selectDocument, selectDocuments } from "src/app/reducers/documents/documents.selectors";
 import { DocumentModel } from "src/app/models/documents.model/document";
+import { FormControl, FormGroup } from "@angular/forms";
 @Component({
     selector: 'app-work-space',
     templateUrl: './work-space.component.html',
@@ -36,12 +37,15 @@ export class WorkSpaceComponent {
 
     }
     public info$: Observable<FindInfoAnswModel> = this.store$.select(findInfo)
-
+    inputForm: FormGroup = new FormGroup({
+        "count": new FormControl(),
+        'number': new FormControl(1)
+    })
     docId: number
     barcode: string
     count: number
     numberInQueue: number = 1
-    productInfo: FindInfoAnswModel | null = new FindInfoAnswModel('', '', '', '', '', '', '', '', '')
+    productInfo: FindInfoAnswModel = new FindInfoAnswModel('', '', '', '', '', '', '', '', '')
     clear = new FindInfoAnswModel('', '', '', '', '', '', '', '', '')
 
     GetProductInfo() {
@@ -56,11 +60,15 @@ export class WorkSpaceComponent {
     }
     AddProductToDoc() {
         if (this.productInfo.article) {
-            this.store$.dispatch(DocumentAction.addProductToDoc(new AddProductModel(this.tokenService.getToken(), this.tokenService.getShop(), this.docId, this.productInfo.article, this.productInfo.barcode, this.productInfo.name, this.count, this.numberInQueue, this.productInfo.price, this.productInfo.img_url)))
-            this.numberInQueue += 1;
-            this.barcode = null
-            this.count = null
+            this.store$.dispatch(DocumentAction.addProductToDoc(new AddProductModel(this.tokenService.getToken(), this.tokenService.getShop(), this.docId, this.productInfo.article, this.productInfo.barcode, this.productInfo.name, this.inputForm.value.count, this.inputForm.value.number, this.productInfo.price, this.productInfo.img_url)))
+            // this.numberInQueue += 1;
+            this.barcode = ''
+            // this.count = null
+            this.inputForm.value.count = ''
+            this.inputForm.value.number += 1
             this.productInfo = this.clear
+            console.log(this.productInfo);
+
         } else
             this.snackBarService.openSnackBar('Отсканируйте ШК', environment.action, environment.styleNoConnect);
     }

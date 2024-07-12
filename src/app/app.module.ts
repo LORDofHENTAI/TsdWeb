@@ -14,7 +14,7 @@ import { CookieService } from 'ngx-cookie-service';
 import { MatSelectModule } from '@angular/material/select';
 import { CreateDocumentDialog } from './components/menu.component/menu.component';
 import { MatDialogModule } from '@angular/material/dialog';
-import { FormsModule } from "@angular/forms";
+import { FormsModule, ReactiveFormsModule } from "@angular/forms";
 import { MatIconModule } from '@angular/material/icon';
 import { DocumentItemsComponent } from './components/document-items.component/document-items.component';
 import { MatSidenavModule } from '@angular/material/sidenav';
@@ -65,7 +65,8 @@ import { DocumentsEffect } from './reducers/documents/documents.effects';
     }),
     EffectsModule.forRoot([DocumentsEffect]),
     StoreRouterConnectingModule.forRoot(),
-    StoreDevtoolsModule.instrument({ maxAge: 25, logOnly: !isDevMode() })
+    StoreDevtoolsModule.instrument({ maxAge: 25, logOnly: !isDevMode() }),
+    ReactiveFormsModule
   ],
   providers: [CookieService],
   bootstrap: [AppComponent]
